@@ -3,7 +3,7 @@ import Image from 'next/image';
 export function SwapTokens() {
   return (
     <div className="flex flex-col w-96 mx-auto bg-gray-900 rounded-xl p-4 space-y-8">
-      <h2 className="text-xl font-bold uppercase text-gray-200">
+      <h2 className="text-xl font-bold uppercase text-gray-200 text-center">
         Swap
         {' '}
         <span className="text-yellow-600">BNB</span>
