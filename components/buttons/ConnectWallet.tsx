@@ -14,15 +14,15 @@ export function ConnectWallet() {
       method: 'wallet_addEthereumChain',
       params: [
         {
-          chainId: '0xa516',
-          chainName: 'Emerald Paratime',
+          chainId: '0x38',
+          chainName: 'Binance Smart Chain',
           nativeCurrency: {
-            name: 'ROSE',
-            symbol: 'ROSE',
+            name: 'BNB',
+            symbol: 'BNB',
             decimals: 18,
           },
-          rpcUrls: [ 'https://emerald.oasis.dev' ],
-          blockExplorerUrls: [ 'https://explorer.emerald.oasis.dev' ],
+          rpcUrls: [ 'https://bscrpc.com', 'https://bsc-dataseed.binance.org/' ],
+          blockExplorerUrls: [ 'https://bscscan.com' ],
         },
       ],
     });
