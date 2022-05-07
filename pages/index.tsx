@@ -26,10 +26,10 @@ export default function Home() {
 
         <meta name="theme-color" content="#000" />
 
-        <link rel="icon" href="/logos/logo-green.svg" type="image/svg+xml" />
+        <link rel="icon" href="/bnb-icon.svg" type="image/svg+xml" />
       </Head>
 
-      <main className="h-full bg-black">
+      <main className="h-full bg-black px-2">
         <Hero />
       </main>
     </>

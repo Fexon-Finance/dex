@@ -79,9 +79,20 @@ export function ConnectWallet() {
 
   if (address) {
     return (
-      <div className="inline-block w-40 py-2 border text-base rounded-md text-white border-white">
-        {address}
+      <div className="flex flex-col">
+        <button
+          type="button"
+          disabled
+          onClick={() => {}}
+          className="ml-auto w-40 py-2 px-4 text-base rounded-md text-white bg-purple-800 disabled:bg-gray-800"
+        >
+          Connected!
+        </button>
+        <div className="mt-1 rounded-md text-white  text-sm my-auto">
+          {address}
+        </div>
       </div>
+
     );
   }
 
@@ -89,10 +100,9 @@ export function ConnectWallet() {
     <button
       type="button"
       onClick={() => handleConnection()}
-      className="inline-block w-40 py-2 border text-base rounded-md text-white border-white"
+      className="inline-block w-40 py-2 px-4 text-base rounded-md text-white bg-purple-800 "
     >
-      Connect
+      Connect MetaMask
     </button>
-
   );
 }
