@@ -6,20 +6,20 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Source</title>
+        <title>Fexon Finance</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta name="title" content="Source" />
+        <meta name="title" content="Fexon Finance" />
         <meta name="description" content="Crypto ETF" />
 
-        <meta property="og:title" content="Source" />
-        <meta property="og:site_name" content="Source" />
+        <meta property="og:title" content="Fexon Finance" />
+        <meta property="og:site_name" content="Fexon Finance" />
         <meta property="og:description" content="Crypto ETF" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="" />
         <meta property="og:url" content="" />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:title" content="Source" />
+        <meta property="twitter:title" content="Fexon Finance" />
         <meta property="twitter:description" content="Crypto ETF" />
         <meta property="twitter:image" content="" />
         <meta property="twitter:url" content="" />
