@@ -20,7 +20,7 @@ export function SwapTokens() {
         {' '}
         for
         {' '}
-        <span className="text-purple-600">EDDB</span>
+        <span className="text-indigo-600">EDDB</span>
       </h2>
       <div className="text-white">
         <div className="flex bg-black rounded-xl">
@@ -52,13 +52,13 @@ export function SwapTokens() {
           type="button"
           key={ChainId.BSC}
           onClick={async () => network[1]?.(ChainId.BSC)}
-          className="text-white font-medium rounded-xl py-3 bg-purple-800 hover:bg-purple-600"
+          className="text-white font-medium rounded-xl py-3 bg-indigo-800 hover:bg-indigo-600"
         >
           Switch to Binance Smart Chain
 
         </button>
       ) : (
-        <button type="button" onClick={() => {}} className="text-white font-medium rounded-xl py-3 bg-purple-800 hover:bg-purple-600">Swap</button>
+        <button type="button" onClick={() => {}} disabled={!address} className="text-white cursor-pointer font-medium rounded-xl py-3 disabled:bg-gray-600 bg-indigo-800 hover:bg-indigo-600">Swap</button>
       )}
     </div>
   );

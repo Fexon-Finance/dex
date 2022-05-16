@@ -45,7 +45,7 @@ export function ConnectWallet() {
         <button
           type="button"
           onClick={openModal}
-          className="px-4 py-2 text-base rounded-xl text-white border-2 border-purple-500"
+          className="px-4 py-2 text-base rounded-xl text-white border-2 border-indigo-500"
         >
           Connect Wallet
         </button>
@@ -79,28 +79,28 @@ export function ConnectWallet() {
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-gray-800 p-6 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-white text-center"
+                    className="text-lg font-medium leading-6 text-white flex justify-between"
                   >
                     {isMismatched ? 'Wrong network!' : 'Connect Wallet'}
+                    <button type="button" onClick={closeModal} className="font-lg mr-1">x</button>
                   </Dialog.Title>
 
                   <div className="mt-4 flex flex-col space-y-2">
-
                     {isMismatched ? (
                       <button
                         type="button"
                         disabled={ChainId.BSC === network[0].data.chain?.id}
                         key={ChainId.BSC}
                         onClick={async () => network[1]?.(ChainId.BSC)}
-                        className="px-4 py-2 text-base rounded-xl text-white border-2 border-purple-500 bg-purple-500"
+                        className="px-4 py-2 text-base rounded-xl text-white border-2 border-indigo-500 bg-indigo-500"
                       >
                         Switch to Binance Smart Chain
                       </button>
                     ) : (
                       <>
-                        <button type="button" onClick={connectWithMetamask} className="px-4 py-2 text-base rounded-xl text-white border-2 border-purple-500">Metamask</button>
-                        <button type="button" onClick={connectWithCoinbaseWallet} className="px-4 py-2 text-base rounded-xl text-white border-2 border-purple-500">Coinbase Wallet</button>
-                        <button type="button" onClick={connectWithWalletConnect} className="px-4 py-2 text-base rounded-xl text-white border-2 border-purple-500">WalletConnect</button>
+                        <button type="button" onClick={connectWithMetamask} className="px-4 py-2 text-base rounded-xl text-white border-2 border-indigo-500 hover:bg-indigo-600">Metamask</button>
+                        <button type="button" onClick={connectWithCoinbaseWallet} className="px-4 py-2 text-base rounded-xl text-white border-2 border-indigo-500 hover:bg-indigo-600">Coinbase Wallet</button>
+                        <button type="button" onClick={connectWithWalletConnect} className="px-4 py-2 text-base rounded-xl text-white border-2 border-indigo-500 hover:bg-indigo-600">WalletConnect</button>
                       </>
                     )}
                   </div>
