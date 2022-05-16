@@ -1,108 +1,116 @@
-import { useState, useEffect } from 'react';
-import Web3 from 'web3';
-import Web3Modal from 'web3modal';
+/* eslint-disable react/jsx-no-bind */
+import {
+  ChainId,
+  useAddress,
+  useCoinbaseWallet,
+  useMetamask,
+  useNetwork,
+  useNetworkMismatch,
+  useWalletConnect,
+} from '@thirdweb-dev/react';
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, useEffect, useState } from 'react';
 
 export function ConnectWallet() {
-  const providerOptions = {};
+  const [ isOpen, setIsOpen ] = useState(false);
 
-  const [ web3, setWeb3 ] = useState(null as any);
-  const [ address, setAddress ] = useState(null);
-  const [ provider, serProvider ] = useState(null as any);
+  const address = useAddress();
+  const connectWithMetamask = useMetamask();
+  const connectWithWalletConnect = useWalletConnect();
+  const connectWithCoinbaseWallet = useCoinbaseWallet();
+  const isMismatched = useNetworkMismatch();
+  const network = useNetwork();
 
-  const handleSwitchNetwork = async () => {
-    await window.web3.currentProvider.request({
-      method: 'wallet_addEthereumChain',
-      params: [
-        {
-          chainId: '0x38',
-          chainName: 'Binance Smart Chain',
-          nativeCurrency: {
-            name: 'BNB',
-            symbol: 'BNB',
-            decimals: 18,
-          },
-          rpcUrls: [ 'https://bscrpc.com', 'https://bsc-dataseed.binance.org/' ],
-          blockExplorerUrls: [ 'https://bscscan.com' ],
-        },
-      ],
-    });
-  };
-
-  const handleConnection = async () => {
-    const web3Modal = new Web3Modal({
-      network: 'mainnet',
-      cacheProvider: true,
-      providerOptions,
-    });
-
-    try {
-      const prv = await web3Modal.connect();
-      serProvider(prv as any);
-
-      const w3 = new Web3(prv) as any;
-      setWeb3(w3);
-
-      await handleSwitchNetwork();
-
-      const accounts = await w3.eth.getAccounts();
-      setAddress(accounts[0]);
-    } catch (err) {
-      console.log('err connect', err);
-    }
-  };
-
-  // Subscribe to accounts change
-  provider?.on('accountsChanged', (accounts: string[]) => {
-    console.log('accountschanged', accounts);
-
-    setAddress(null);
-  });
-
-  // Subscribe to chainId change
-  provider?.on('chainChanged', (chainId: number) => {
-    console.log('chainchanged', chainId);
-
-    setAddress(null);
-  });
-
-  // Subscribe to provider connection
-  provider?.on('connect', (info: { chainId: number }) => {
-    console.log('connect', info);
-  });
-
-  // Subscribe to provider disconnection
-  provider?.on('disconnect', (error: { code: number; message: string }) => {
-    console.log('disconnect', error);
-
-    setAddress(null);
-  });
-
-  if (address) {
-    return (
-      <div className="flex flex-col">
-        <button
-          type="button"
-          disabled
-          onClick={() => {}}
-          className="ml-auto w-40 py-2 px-4 text-base rounded-md text-white bg-purple-800 disabled:bg-gray-800"
-        >
-          Connected!
-        </button>
-        <div className="mt-1 rounded-md text-white  text-sm my-auto">
-          {address}
-        </div>
-      </div>
-
-    );
+  function closeModal() {
+    setIsOpen(false);
   }
 
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  useEffect(() => {
+    if (address && !isMismatched) closeModal();
+  });
+
+  const addr = `${address?.slice(0, 5)}...${address?.slice(-5)}`;
+
   return (
-    <button
-      type="button"
-      onClick={() => handleConnection()}
-      className="inline-block w-40 py-2 px-4 text-base rounded-md text-white bg-purple-800 "
-    >
-      Connect MetaMask
-    </button>
+    <>
+      {address ? (
+        <p className="text-white text-sm">
+          {addr}
+        </p>
+      ) : (
+        <button
+          type="button"
+          onClick={openModal}
+          className="px-4 py-2 text-base rounded-xl text-white border-2 border-purple-500"
+        >
+          Connect Wallet
+        </button>
+      )}
+
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-gray-800 p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-white text-center"
+                  >
+                    {isMismatched ? 'Wrong network!' : 'Connect Wallet'}
+                  </Dialog.Title>
+
+                  <div className="mt-4 flex flex-col space-y-2">
+
+                    {isMismatched ? (
+                      <button
+                        type="button"
+                        disabled={ChainId.BSC === network[0].data.chain?.id}
+                        key={ChainId.BSC}
+                        onClick={async () => network[1]?.(ChainId.BSC)}
+                        className="px-4 py-2 text-base rounded-xl text-white border-2 border-purple-500 bg-purple-500"
+                      >
+                        Switch to Binance Smart Chain
+                      </button>
+                    ) : (
+                      <>
+                        <button type="button" onClick={connectWithMetamask} className="px-4 py-2 text-base rounded-xl text-white border-2 border-purple-500">Metamask</button>
+                        <button type="button" onClick={connectWithCoinbaseWallet} className="px-4 py-2 text-base rounded-xl text-white border-2 border-purple-500">Coinbase Wallet</button>
+                        <button type="button" onClick={connectWithWalletConnect} className="px-4 py-2 text-base rounded-xl text-white border-2 border-purple-500">WalletConnect</button>
+                      </>
+                    )}
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+    </>
   );
 }
+

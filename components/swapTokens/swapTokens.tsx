@@ -1,6 +1,16 @@
 import Image from 'next/image';
+import {
+  ChainId,
+  useAddress,
+  useNetworkMismatch,
+  useNetwork,
+} from '@thirdweb-dev/react';
 
 export function SwapTokens() {
+  const address = useAddress();
+  const isMismatched = useNetworkMismatch();
+  const network = useNetwork();
+
   return (
     <div className="flex flex-col w-96 mx-auto bg-gray-900 rounded-xl p-4 space-y-8">
       <h2 className="text-xl font-bold uppercase text-gray-200 text-center">
@@ -37,7 +47,19 @@ export function SwapTokens() {
         </div>
       </div>
 
-      <button type="button" onClick={() => {}} className="text-white font-medium rounded-xl py-3 bg-purple-800 hover:bg-purple-600">Swap</button>
+      {isMismatched ? (
+        <button
+          type="button"
+          key={ChainId.BSC}
+          onClick={async () => network[1]?.(ChainId.BSC)}
+          className="text-white font-medium rounded-xl py-3 bg-purple-800 hover:bg-purple-600"
+        >
+          Switch to Binance Smart Chain
+
+        </button>
+      ) : (
+        <button type="button" onClick={() => {}} className="text-white font-medium rounded-xl py-3 bg-purple-800 hover:bg-purple-600">Swap</button>
+      )}
     </div>
   );
 }
