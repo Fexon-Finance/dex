@@ -65,6 +65,7 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
       data: encoded,
       nonce: 0x00,
       value: web3?.utils.numberToHex(price!),
+      gas: 30000,
     };
 
     console.log(tx);
