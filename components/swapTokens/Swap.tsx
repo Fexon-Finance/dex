@@ -10,7 +10,7 @@ import Web3 from 'web3';
 import { ArrowDownIcon } from '@heroicons/react/outline';
 
 type SwapTypes = {
-  web3: Web3;
+  web3: Web3 | undefined;
   contract: any;
   contractAddress: string;
 };
