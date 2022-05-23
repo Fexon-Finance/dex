@@ -5,7 +5,7 @@ import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThirdwebProvider desiredChainId={ChainId.BSC}>
+    <ThirdwebProvider desiredChainId={97}>
       <Component {...pageProps} />
     </ThirdwebProvider>
   );
