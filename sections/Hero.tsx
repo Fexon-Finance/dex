@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ConnectWallet, SwapTokens } from '../components';
+import { ConnectWallet, Swap } from '../components';
 import { SectionTemplate } from './SectionTemplate';
 
 export function Hero() {
@@ -8,18 +8,7 @@ export function Hero() {
   return (
     <SectionTemplate id="hero">
 
-      <div className="flex justify-between pt-8 mx-auto">
-        <div className="">
-          <h1 className="text-2xl font-semibold text-gray-300">Fexon Finance</h1>
-          <p className="text-center text-sm text-gray-500">Crypto ETF</p>
-        </div>
-
-        <ConnectWallet />
-      </div>
-
-      <div className="mt-16">
-        <SwapTokens />
-      </div>
+      <Swap />
 
       <div className="flex flex-col mt-4">
         <h2 className="text-sm text-white text-center font-semibold">

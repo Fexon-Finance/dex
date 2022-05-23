@@ -7,7 +7,7 @@ type LayoutProps = {
 
 export function SectionTemplate({ id, children }: LayoutProps) {
   return (
-    <section id={id} className="h-full max-w-6xl mx-auto">
+    <section id={id} className="h-full max-w-6xl flex flex-col justify-center mx-auto">
       {children}
     </section>
   );
