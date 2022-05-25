@@ -63,13 +63,13 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
       token: 'BNB',
       method: setBNBAmount,
       icon: <Image src="/bnb-icon.svg" height={24} width={24} />,
-      balance: tokenBalances.bnbBalance,
+      balance: tokenBalances.bnb,
     },
     {
       token: 'RUG',
       method: setEtfAmount,
       icon: <Image src="/logo.svg" height={24} width={24} />,
-      balance: tokenBalances.rugBalance,
+      balance: tokenBalances.rug,
     },
   ]);
 
@@ -90,30 +90,17 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
     const rugBalance = await contract.methods.balanceOf(address).call();
     const bnbBalance = await web3?.eth.getBalance(address!);
 
-    console.log({
-      rugBalance: web3?.utils.fromWei(rugBalance),
-      bnbBalance: web3?.utils.fromWei(bnbBalance!),
-    });
+    const balances: Record<string, string | any> = {
+      rug: web3?.utils.fromWei(rugBalance),
+      bnb: web3?.utils.fromWei(bnbBalance!),
+    };
 
-    setTokenBalances({
-      rugBalance: web3?.utils.fromWei(rugBalance),
-      bnbBalance: web3?.utils.fromWei(bnbBalance!),
-    });
+    setTokenBalances(balances);
 
-    setConfiguration([
-      {
-        token: 'BNB',
-        method: setBNBAmount,
-        icon: <Image src="/bnb-icon.svg" height={24} width={24} />,
-        balance: web3?.utils.fromWei(bnbBalance!),
-      },
-      {
-        token: 'RUG',
-        method: setEtfAmount,
-        icon: <Image src="/logo.svg" height={24} width={24} />,
-        balance: web3?.utils.fromWei(rugBalance),
-      },
-    ]);
+    setConfiguration(configuration.map((conf) => ({
+      ...conf,
+      balance: balances[conf.token.toLowerCase()],
+    })));
   };
 
   useEffect(() => {
