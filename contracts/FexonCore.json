@@ -12,6 +12,11 @@
 				"type": "address"
 			},
 			{
+				"internalType": "address",
+				"name": "fexonOracle",
+				"type": "address"
+			},
+			{
 				"components": [
 					{
 						"internalType": "string",
@@ -92,16 +97,10 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "busdAmount",
-				"type": "uint256"
-			}
-		],
+		"inputs": [],
 		"name": "buy",
 		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -383,6 +382,19 @@
 				"internalType": "uint8",
 				"name": "",
 				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getCurrentPrice",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",

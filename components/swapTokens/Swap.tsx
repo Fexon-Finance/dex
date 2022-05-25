@@ -15,44 +15,46 @@ type SwapTypes = {
   contractAddress: string;
 };
 
+const ERC20Abi = require('../../contracts/ERC20.abi.json');
+
 export function Swap({ web3, contract, contractAddress }: SwapTypes) {
   const address = useAddress();
   const isMismatched = useNetworkMismatch();
   const network = useNetwork();
 
-  const [ busdAmount, setBusdAmount ] = useState('0');
+  const [ BNBAmount, setBNBAmount ] = useState('0');
   const [ etfAmount, setEtfAmount ] = useState('0');
   const [ tradeType, setTradeType ] = useState('buy');
 
-  const getGasFee = async (price: string) => {
-    // const resGasMethod = await contract.methods.buy(price).estimateGas({ from: address });
-    // console.log(resGasMethod);
-
-    // const latestBlock = await web3.eth.getBlock('latest');
-    // const blockGas = latestBlock.gasLimit;
-
-    // console.log({ blockGas });
-    // const finalGas = (blockGas * resGasMethod);
-    // const finalGasInEther = web3.utils.fromWei(finalGas.toString(), 'ether');
-  };
-
   const handleBuy = async () => {
-    const price = web3?.utils.toWei(busdAmount);
-    const encoded = contract.methods.buy(price).encodeABI();
+    const BusdTokenAddress = "0xed24fc36d5ee211ea25a80239fb8c4cfd80f12ee";
+    const BusdContract = new web3!.eth.Contract(ERC20Abi as any, BusdTokenAddress);
+    
+    const price = web3?.utils.toWei(BNBAmount);
+    // const value = web3?.utils.numberToHex(price!);
+
+    // await BusdContract.methods.approve(BNBTokenAddress, price).send({
+    //   from: address
+    // });
+
+    const encoded = contract.methods.buy().encodeABI();
+    const nonce = await web3?.eth.getTransactionCount(contractAddress, 'latest');
 
     const tx = {
       from: address,
       to: contractAddress,
       data: encoded,
-      nonce: 0x00,
-      value: web3?.utils.numberToHex(price!),
-      gas: 30000,
+      nonce,
+      value: price,
+      gas: 90000,
     };
 
     console.log(tx);
 
     const res = await web3?.eth.sendTransaction(tx);
     console.log({ res });
+
+    // await contract.methods.buy().send({from: address, gas: 300000, value});
   };
 
   const handleSell = async () => {
@@ -76,8 +78,8 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
 
   const [ configuration, setConfiguration ] = useState([
     {
-      token: 'BUSD',
-      method: setBusdAmount,
+      token: 'BNB',
+      method: setBNBAmount,
       icon: <Image src="/bnb-icon.svg" height={24} width={24} />,
     },
     {
@@ -93,7 +95,7 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
 
   const swap = () => {
     console.log({ configuration });
-    if (configuration[0].token === 'BUSD') {
+    if (configuration[0].token === 'BNB') {
       console.log('buy');
       handleBuy();
     }
@@ -113,7 +115,7 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
       <div className="relative text-white space-y-4">
         {configuration.map((c) => (
           <div className="flex bg-black rounded-xl">
-            <input type="number" id="busd-amount" onChange={(e) => c.method(e.target.value)} className="bg-black rounded-l-xl px-4 py-6 flex-1 focus:border-gray-800" />
+            <input type="number" onChange={(e) => c.method(e.target.value)} className="bg-black rounded-l-xl px-4 py-6 flex-1 focus:border-gray-800" />
             <div className="my-auto px-2">
               <div className="flex py-2 bg-gray-800 rounded-xl justify-center px-4">
                 {c.icon}
