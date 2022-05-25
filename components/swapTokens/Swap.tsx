@@ -25,18 +25,10 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
   const [ BNBAmount, setBNBAmount ] = useState('0');
   const [ etfAmount, setEtfAmount ] = useState('0');
   const [ tradeType, setTradeType ] = useState('buy');
+  const [ tokenBalances, setTokenBalances ] = useState<any>({});
 
   const handleBuy = async () => {
-    const BusdTokenAddress = "0xed24fc36d5ee211ea25a80239fb8c4cfd80f12ee";
-    const BusdContract = new web3!.eth.Contract(ERC20Abi as any, BusdTokenAddress);
-    
     const price = web3?.utils.toWei(BNBAmount);
-    // const value = web3?.utils.numberToHex(price!);
-
-    // await BusdContract.methods.approve(BNBTokenAddress, price).send({
-    //   from: address
-    // });
-
     const encoded = contract.methods.buy().encodeABI();
     const nonce = await web3?.eth.getTransactionCount(contractAddress, 'latest');
 
@@ -46,34 +38,24 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
       data: encoded,
       nonce,
       value: price,
-      gas: 90000,
     };
 
-    console.log(tx);
-
-    const res = await web3?.eth.sendTransaction(tx);
-    console.log({ res });
-
-    // await contract.methods.buy().send({from: address, gas: 300000, value});
+    await web3?.eth.sendTransaction(tx);
   };
 
   const handleSell = async () => {
     const price = web3?.utils.toWei(etfAmount);
     const encoded = contract.methods.sell(price).encodeABI();
+    const nonce = await web3?.eth.getTransactionCount(contractAddress, 'latest');
 
     const tx = {
       from: address,
       to: contractAddress,
       data: encoded,
-      nonce: 0x00,
-      value: web3?.utils.numberToHex(price!),
-      gas: 30000,
+      nonce,
     };
 
-    console.log(tx);
-
-    const res = await web3?.eth.sendTransaction(tx);
-    console.log({ res });
+    await web3?.eth.sendTransaction(tx);
   };
 
   const [ configuration, setConfiguration ] = useState([
@@ -81,17 +63,15 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
       token: 'BNB',
       method: setBNBAmount,
       icon: <Image src="/bnb-icon.svg" height={24} width={24} />,
+      balance: tokenBalances.bnbBalance,
     },
     {
-      token: 'FXN',
+      token: 'RUG',
       method: setEtfAmount,
       icon: <Image src="/logo.svg" height={24} width={24} />,
+      balance: tokenBalances.rugBalance,
     },
   ]);
-
-  const swapConfiguration = () => {
-    setConfiguration([ ...configuration.reverse() ]);
-  };
 
   const swap = () => {
     console.log({ configuration });
@@ -100,10 +80,53 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
       handleBuy();
     }
 
-    if (configuration[0].token === 'FXN') {
+    if (configuration[0].token === 'RUG') {
       console.log('sell');
       handleSell();
     }
+  };
+
+  const getBalance = async () => {
+    const rugBalance = await contract.methods.balanceOf(address).call();
+    const bnbBalance = await web3?.eth.getBalance(address!);
+
+    console.log({
+      rugBalance: web3?.utils.fromWei(rugBalance),
+      bnbBalance: web3?.utils.fromWei(bnbBalance!),
+    });
+
+    setTokenBalances({
+      rugBalance: web3?.utils.fromWei(rugBalance),
+      bnbBalance: web3?.utils.fromWei(bnbBalance!),
+    });
+
+    setConfiguration([
+      {
+        token: 'BNB',
+        method: setBNBAmount,
+        icon: <Image src="/bnb-icon.svg" height={24} width={24} />,
+        balance: web3?.utils.fromWei(bnbBalance!),
+      },
+      {
+        token: 'RUG',
+        method: setEtfAmount,
+        icon: <Image src="/logo.svg" height={24} width={24} />,
+        balance: web3?.utils.fromWei(rugBalance),
+      },
+    ]);
+  };
+
+  useEffect(() => {
+    if (contract !== null && address !== undefined) {
+      (async () => {
+        console.log('get balances');
+        await getBalance();
+      })();
+    }
+  }, [ contract, address ]);
+
+  const swapConfiguration = () => {
+    setConfiguration([ ...configuration.reverse() ]);
   };
 
   return (
@@ -116,7 +139,14 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
         {configuration.map((c) => (
           <div className="flex bg-black rounded-xl">
             <input type="number" onChange={(e) => c.method(e.target.value)} className="bg-black rounded-l-xl px-4 py-6 flex-1 focus:border-gray-800" />
-            <div className="my-auto px-2">
+            <div className="my-auto px-2 py-2 flex flex-col">
+              {c.balance && (
+                <p className="text-sm text-gray-400 mb-1">
+                  Max:
+                  {' '}
+                  {c.balance}
+                </p>
+              )}
               <div className="flex py-2 bg-gray-800 rounded-xl justify-center px-4">
                 {c.icon}
                 <span className="ml-2 text-lg">{c.token}</span>
