@@ -66,10 +66,10 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
       balance: tokenBalances.bnb,
     },
     {
-      token: 'RUG',
+      token: 'FXN',
       method: setEtfAmount,
       icon: <Image src="/logo.svg" height={24} width={24} />,
-      balance: tokenBalances.rug,
+      balance: tokenBalances.fxn,
     },
   ]);
 
@@ -80,18 +80,18 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
       handleBuy();
     }
 
-    if (configuration[0].token === 'RUG') {
+    if (configuration[0].token === 'FXN') {
       console.log('sell');
       handleSell();
     }
   };
 
   const getBalance = async () => {
-    const rugBalance = await contract.methods.balanceOf(address).call();
+    const fxnBalance = await contract.methods.balanceOf(address).call();
     const bnbBalance = await web3?.eth.getBalance(address!);
 
     const balances: Record<string, string | any> = {
-      rug: web3?.utils.fromWei(rugBalance),
+      fxn: web3?.utils.fromWei(fxnBalance),
       bnb: web3?.utils.fromWei(bnbBalance!),
     };
 
@@ -124,21 +124,23 @@ export function Swap({ web3, contract, contractAddress }: SwapTypes) {
 
       <div className="relative text-white space-y-4">
         {configuration.map((c) => (
-          <div className="flex bg-black rounded-xl">
-            <input type="number" onChange={(e) => c.method(e.target.value)} className="bg-black rounded-l-xl px-4 py-6 flex-1 focus:border-gray-800" />
-            <div className="my-auto px-2 py-2 flex flex-col">
-              {c.balance && (
-                <p className="text-sm text-gray-400 mb-1">
-                  Max:
-                  {' '}
-                  {c.balance}
-                </p>
-              )}
-              <div className="flex py-2 bg-gray-800 rounded-xl justify-center px-4">
+          <div className="flex flex-col bg-black rounded-xl">
+            {c.balance && (
+              <p className="text-sm text-gray-400 text-right mr-2">
+                Max:
+                {' '}
+                {c.balance}
+              </p>
+            )}
+            <div className="flex">
+              <input type="number" onChange={(e) => c.method(e.target.value)} className="bg-black rounded-l-xl px-4 py-4 flex-1 focus:border-gray-800" />
+              <div className="my-auto flex bg-gray-800 rounded-xl justify-center px-4 py-2">
                 {c.icon}
                 <span className="ml-2 text-lg">{c.token}</span>
               </div>
+
             </div>
+
           </div>
         ))}
 

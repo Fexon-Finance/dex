@@ -16,7 +16,7 @@ export function Hero() {
 
   const [ web3, setWeb3 ] = useState<Web3>();
   const [ contract, setContract ] = useState<any>(null);
-  const contractAddress = '0x7eD4FE8216B45664fC8Bd5860a1c57F7645cB880';
+  const contractAddress = '0x79570d1cD796b30AED2FCD09D9c6F4DE01e8Ef6F';
 
   const getPortfolio = async () => {
     const portf: PortfolioCoin[] = await contract.methods.viewPortfolio().call();
